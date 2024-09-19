@@ -1,0 +1,25 @@
+
+
+{{ if .isCurrentUser }}
+    <div class="col-span-2 ">
+        <div class="flex flex-row-reverse message-item ">
+            <div class="-ml-2 z-10 h-8 w-8 rounded-full bg-black text-white items-center flex justify-center flex-shrink-0 ">
+                <span>UR</span>
+            </div>
+            <div class="bg-gray-200 p-2 rounded-lg pr-4">
+                <p class="text-sm">{{.content}}</p>
+            </div>
+        </div>
+    </div>
+{{ else }}
+    <div class="col-span-2">
+        <div class="flex message-item">
+            <div class="-mr-2 z-10 h-8 w-8 rounded-full bg-black text-white items-center flex justify-center flex-shrink-0 ">
+                <span>UR</span>
+            </div>
+            <div class="bg-gray-200 p-2 rounded-lg pl-4">
+                <p class="text-sm">{{.content}}</p>
+            </div>
+        </div>
+    </div>
+{{ end }}
