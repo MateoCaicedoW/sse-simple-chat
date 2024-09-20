@@ -16,6 +16,9 @@ This app is built using the following technologies:
 
 ## Video Demo
 
+https://github.com/user-attachments/assets/ddf412c1-dad3-4705-a7f6-257e791ad045
+
+
 ## Running the app
 To run the app, you need to have Go installed on your machine. You can download Go from [here](https://golang.org/dl/).
 
