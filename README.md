@@ -1,41 +1,52 @@
-## LeapKit Template
+## Simple SSE Chat Application
+This is a simple chat application that uses Server-Sent Events (SSE) and HTMX to create a chat application. Allows multiroom chat. So far, the app has only two rooms: `Friends` and `Family` and the messages are not persisted. 
 
-<img width="300" alt="logo" src="https://github.com/leapkit/leapkit/template/assets/645522/d5bcb8ed-c763-4b39-8cfb-aed694b87646">
-<br><br>
+This app is built using the following technologies:
+- [Go](https://golang.org/)
+- [Leapkit](https://leapkit.dev/)
+- [HTMX](https://htmx.org/)
+- [Server-Sent Events](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events)
 
-This is the  LeapKit template for building web applications with Go, HTMX and Tailwind CSS. It integrates useful features such as hot code reload and css recompiling.
 
-### Getting started
 
-Install dependencies:
+## Features
+- Multiroom chat
+- Real-time chat
+- Simple and easy to use
 
-```sh
+## Video Demo
+
+## Running the app
+To run the app, you need to have Go installed on your machine. You can download Go from [here](https://golang.org/dl/).
+
+After installing Go, you need to install kit, which is the CLI tool for Leapkit. You can install kit by running the following command:
+
+```bash
+go install github.com/leapkit/leapkit/kit@latest
+```
+
+After installing kit, you have to install the dependencies for the app and set up. You can do this by running the following command:
+
+```bash
 go mod download
+```
+
+```bash
 go run ./cmd/setup
 ```
 
-### Building the application
+After setting up the app, you can run the app by running the following command:
 
-```sh
-# Building TailwindCSS with tailo
-> go run github.com/paganotoni/tailo/cmd/build@a4899cd
-
-# Building the app
-> go build -tags osusergo,netgo -buildvcs=false -o bin/app ./cmd/app
+```bash
+kit s
 ```
 
-### Running the application
+This will start the app on `http://localhost:3000`.
 
-To run the application in development mode execute:
 
-```sh
-kit dev
-```
+## Contributing
+Contributions are welcome. Feel free to open an issue or a pull request.
 
-And open `http://localhost:3000` in your browser.
 
-### Generating a migration
 
-```sh
-go run github.com/leapkit/leapkit/core/cmd/generate@latest migration
-```
+
