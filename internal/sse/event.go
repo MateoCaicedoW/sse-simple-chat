@@ -20,6 +20,9 @@ type Event struct {
 
 	//UserID is the user id
 	UserID string
+
+	// RoomID is the room id
+	RoomID string
 }
 
 // NewEvent creates a new event

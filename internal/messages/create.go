@@ -11,6 +11,7 @@ import (
 
 func Create(w http.ResponseWriter, r *http.Request) {
 	msg := r.FormValue("message")
+	chatID := r.PathValue("chat_id")
 
 	msg = strings.TrimSpace(msg)
 	msg = strings.Replace(msg, "\n", "<br>", -1)
@@ -18,6 +19,7 @@ func Create(w http.ResponseWriter, r *http.Request) {
 	message := sse.NewEvent("message")
 	message.UserID = auth.GetUserID(session.FromCtx(r.Context()))
 	message.Content = msg
+	message.RoomID = chatID
 
 	message.Broadcast()
 }
