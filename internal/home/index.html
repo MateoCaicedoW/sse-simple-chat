@@ -1,29 +1,23 @@
-<section class="h-full" hx-ext="sse" sse-connect="/chat">
+<section class="h-full">
     <div class="bg-white h-full max-w-[1200px] m-auto border-x">
         <header class="bg-gray-800 text-white p-4">
             <h1 class="text-2xl font-bold">SSE Simple Chat</h1>
         </header>
         <main class="flex">
             <div class="border-r min-w-[200px]">
-                <h2 class="text-xl font-bold p-4">Users</h2>
+                <h2 class="text-xl font-bold p-4">Groups</h2>
                 <div class="flex flex-col gap-3 p-2">
-                    <button class="flex items-center gap-2 hover:bg-gray-100 px-3 py-2 rounded-lg" hx-get="/?chatID=1" hx-trigger="click" hx-target="#chat-container" hx-swap="innerHTML">
-                        <div class="h-8 w-8 rounded-full bg-black text-white items-center flex justify-center flex-shrink-0 ">
-                            <span>UR</span>
-                        </div>
-                        <div>
-                            <p class="font-bold">Chat 1</p>
-                        </div>
-                    </button>
 
-                    <button class="flex items-center gap-2 hover:bg-gray-100 px-3 py-2 rounded-lg" hx-get="/?chatID=2" hx-trigger="click" hx-target="#chat-container" hx-swap="innerHTML">
-                        <div class="h-8 w-8 rounded-full bg-black text-white items-center flex justify-center flex-shrink-0 ">
-                            <span>UR</span>
-                        </div>
-                        <div>
-                            <p class="font-bold">Chat 2</p>
-                        </div>
-                    </button>
+                    <%= for (chat) in chats { %>
+                        <button class="flex items-center gap-2 hover:bg-gray-100 px-3 py-2 rounded-lg" hx-get="/?chatID=<%= chat.ID %>&name=<%= chat.Name %>" hx-trigger="click" hx-target="#chat-container" hx-swap="innerHTML">
+                            <div class="h-8 w-8 rounded-full bg-black text-white items-center flex justify-center flex-shrink-0 ">
+                                <img src="<%= chat.Pic %>" alt="" class="w-full h-full rounded-full">
+                            </div>
+                            <div>
+                                <p class="font-bold"><%= chat.Name %></p>
+                            </div>
+                        </button>
+                    <% } %>
                 </div>
             </div>
             <div class="p-4 w-full" id="chat-container">

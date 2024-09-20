@@ -9,68 +9,83 @@ import (
 // a slow client or a client that closed after `range clients` started.
 const patience time.Duration = time.Second * 1
 
-var msg = make(chan Event)
 var broker = newBroker()
 
 type Broker struct {
 
 	// Events are pushed to this channel by the main events-gathering routine
-	Notifier chan Event
+	notifier chan Event
 
 	// New client connections
 	newClients chan Client
 
 	// Closed client connections
-	closingClients chan string
+	closingClients chan Client
 
-	// Client connections registry
-	clients map[string]chan Event
+	// Rooms registry for clients
+	rooms map[string]*Room
 }
 
-type Client struct {
-	ID          string
-	MessageChan chan Event
-	RoomID      string
-}
-
-type Room struct {
-	ID          string
-	MessageChan chan Event
+// Get or create a room
+// If the room does not exist, it will be created and returned
+// If the room exists, it will be returned
+func (b *Broker) getOrCreateRoom(roomID string) *Room {
+	room, exists := b.rooms[roomID]
+	if !exists {
+		room = &Room{
+			ID:      roomID,
+			clients: make(map[string]chan Event),
+		}
+		b.rooms[roomID] = room
+	}
+	return room
 }
 
 func newBroker() (broker *Broker) {
 	// Instantiate a broker
 	broker = &Broker{
-		Notifier:       make(chan Event, 1),
+		notifier:       make(chan Event, 1),
 		newClients:     make(chan Client),
-		closingClients: make(chan string),
-		clients:        make(map[string]chan Event),
+		closingClients: make(chan Client),
+		rooms:          make(map[string]*Room),
 	}
 
 	// Set it running - listening and broadcasting events
-	go listen(broker)
-
+	go broker.listen()
 	return
 }
 
-func listen(broker *Broker) {
+func (broker *Broker) listen() {
 	for {
 		select {
 		case s := <-broker.newClients:
 			// A new client has connected.
-			//create a new client identifier
-			clientID := s.ID
-			broker.clients[clientID] = s.MessageChan
-			log.Printf("Client added. %d registered clients", len(broker.clients))
+			room := broker.getOrCreateRoom(s.RoomID)
+			room.addClient(s)
+
+			log.Printf("Client added. %d registered clients", len(room.clients))
 		case s := <-broker.closingClients:
 			// A client has dettached and we want to
 			// stop sending them messages.
-			delete(broker.clients, s)
-			log.Printf("Removed client. %d registered clients", len(broker.clients))
-		case event := <-broker.Notifier:
+			if room, exists := broker.rooms[s.RoomID]; exists {
+				room.removeClient(s.ID)
+				log.Printf("Removed client from room. %d registered clients", len(room.clients))
+			}
+
+			if len(broker.rooms[s.RoomID].clients) == 0 {
+				delete(broker.rooms, s.RoomID)
+				log.Printf("Removed room. %d registered rooms", len(broker.rooms))
+			}
+
+		case event := <-broker.notifier:
+			room, exists := broker.rooms[event.RoomID]
+			if !exists {
+				log.Printf("Room does not exist")
+				continue
+			}
 
 			// Broadcast to all clients
-			for id, clientMessageChan := range broker.clients {
+			for id, clientMessageChan := range room.clients {
 				message, err := event.BuildMessage(map[string]interface{}{
 					"content":       event.Content,
 					"isCurrentUser": event.UserID == id,
@@ -89,12 +104,4 @@ func listen(broker *Broker) {
 			}
 		}
 	}
-}
-
-func OpenSSEConnection() {
-	go func() {
-		for message := range msg {
-			broker.Notifier <- message
-		}
-	}()
 }

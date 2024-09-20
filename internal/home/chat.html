@@ -1,6 +1,6 @@
-<h2 class="text-xl font-bold">Chat</h2>
+<h2 class="text-xl font-bold"><%= name %></h2>
 <div class="h-[calc(100svh_-_210px)] overflow-auto mt-4 ">
-    <div id="chat" class="grid grid-cols-2 gap-3 "  sse-swap="message" hx-swap="beforeend">
+    <div id="chat" class="grid grid-cols-2 gap-3" hx-ext="sse" sse-connect="/chat/<%= chatID %>" sse-swap="message" hx-swap="beforeend">
 
     </div>
 </div>

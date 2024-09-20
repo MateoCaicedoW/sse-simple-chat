@@ -56,9 +56,9 @@ func New() Server {
 		render.WithDefaultLayout("layout.html"),
 	))
 
-	sse.OpenSSEConnection()
+	// sse.OpenSSEConnection()
 	r.HandleFunc("GET /{$}", home.Index)
-	r.HandleFunc("GET /chat", sse.HandleSSE)
+	r.HandleFunc("GET /chat/{id}", sse.HandleSSE)
 	r.HandleFunc("POST /messages/{chat_id}", messages.Create)
 	return r
 }
