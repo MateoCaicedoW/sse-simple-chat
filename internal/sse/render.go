@@ -2,6 +2,7 @@ package sse
 
 import (
 	"bytes"
+	"fmt"
 	"html/template"
 )
 
@@ -12,6 +13,7 @@ func RenderToString(name string, data interface{}) (string, error) {
 
 	err := template.Must(template.New(name).ParseFiles("internal/sse/"+name)).Execute(w, data)
 	if err != nil {
+		fmt.Println("Error rendering template:", err)
 		return "", err
 	}
 
