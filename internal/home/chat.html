@@ -1,11 +1,11 @@
-<h2 class="text-xl font-bold"><%= name %></h2>
+<h2 class="text-xl font-bold">Random</h2>
 <div class="h-[calc(100svh_-_210px)] overflow-auto mt-4 ">
-    <div id="chat" class="grid grid-cols-2 gap-3" hx-ext="sse" sse-connect="/chat/<%= chatID %>" sse-swap="message" hx-swap="beforeend">
+    <div id="chat" class="flex flex-col gap-2" hx-ext="sse" sse-connect="/chat" sse-swap="chat" hx-swap="beforeend">
 
     </div>
 </div>
 <div class="mt-5">
-    <form hx-post="/messages/<%= chatID %>" hx-swap="none" _="on htmx:afterRequest set #message's value to ''" class="flex items-center gap-2">
+    <form hx-post="/message" hx-swap="none" _="on htmx:afterRequest set #message's value to ''" class="flex items-center gap-2">
         <input autofocus id="message" type="text" name="message" class="w-full border p-2 rounded-lg focus:ring-black focus:border-0 focus:ring-2" placeholder="Type your message here..." />
         <button type="submit" class="bg-gray-800 text-white p-2 rounded-lg">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">

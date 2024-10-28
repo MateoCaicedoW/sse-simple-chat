@@ -17,12 +17,6 @@ type Event struct {
 
 	// Client is the client that the event is sent to
 	ClientID string
-
-	//UserID is the user id
-	UserID string
-
-	// RoomID is the room id
-	RoomID string
 }
 
 // NewEvent creates a new event
@@ -31,8 +25,6 @@ func NewEvent(name string) *Event {
 		Name:     name,
 		Data:     "",
 		ClientID: "",
-		UserID:   "",
-		RoomID:   "",
 	}
 }
 
@@ -47,5 +39,5 @@ func (e Event) BuildMessage(data interface{}) (string, error) {
 }
 
 func (e *Event) Broadcast() {
-	broker.notifier <- *e
+	broker.messages <- *e
 }

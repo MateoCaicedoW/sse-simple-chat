@@ -57,7 +57,7 @@ func New() Server {
 	))
 
 	r.HandleFunc("GET /{$}", home.Index)
-	r.HandleFunc("GET /chat/{id}", sse.HandleSSE)
-	r.HandleFunc("POST /messages/{chat_id}", messages.Create)
+	r.HandleFunc("GET /chat", sse.HandleSSE)
+	r.HandleFunc("POST /message", messages.Create)
 	return r
 }
