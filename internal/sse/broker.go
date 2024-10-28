@@ -18,13 +18,21 @@ type Broker struct {
 	closingClients chan Client
 
 	// Send a message to all clients
-	messages chan Event
+	messages chan event
+}
+
+type Client struct {
+	// ID is the client id
+	ID string
+
+	// MessageChan is the message channel for the client to receive messages
+	MessageChan chan event
 }
 
 func newBroker() (broker *Broker) {
 	// Instantiate a broker
 	broker = &Broker{
-		messages:       make(chan Event),
+		messages:       make(chan event),
 		newClients:     make(chan Client),
 		closingClients: make(chan Client),
 		clients:        map[string]Client{},

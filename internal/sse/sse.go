@@ -22,7 +22,7 @@ func HandleSSE(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Connection", "keep-alive")
 
 	// Each connection registers its own message channel with the Broker's connection registry
-	ev := make(chan Event)
+	ev := make(chan event)
 
 	generateRandomString := func() string {
 		b := make([]byte, 10)

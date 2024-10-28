@@ -5,7 +5,7 @@ import (
 	"strings"
 )
 
-type Event struct {
+type event struct {
 	// Name is the event name
 	Name string
 
@@ -14,22 +14,17 @@ type Event struct {
 
 	//Content is the content of the message
 	Content string
-
-	// Client is the client that the event is sent to
-	ClientID string
 }
 
 // NewEvent creates a new event
-func NewEvent(name string) *Event {
-	return &Event{
-		Name:     name,
-		Data:     "",
-		ClientID: "",
+func NewEvent(name string) *event {
+	return &event{
+		Name: name,
 	}
 }
 
 // BuildMessage builds the message
-func (e Event) BuildMessage(data interface{}) (string, error) {
+func (e event) BuildMessage(data interface{}) (string, error) {
 	message, err := RenderToString("message.html", data)
 	if err != nil {
 		return "", fmt.Errorf("failed to render message: %v", err)
@@ -38,6 +33,6 @@ func (e Event) BuildMessage(data interface{}) (string, error) {
 	return strings.Replace(message, "\n", "", -1), nil
 }
 
-func (e *Event) Broadcast() {
+func (e *event) Broadcast() {
 	broker.messages <- *e
 }
