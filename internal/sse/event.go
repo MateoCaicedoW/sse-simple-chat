@@ -11,9 +11,6 @@ type event struct {
 
 	// Data is the event data
 	Data string
-
-	//Content is the content of the message
-	Content string
 }
 
 // NewEvent creates a new event
