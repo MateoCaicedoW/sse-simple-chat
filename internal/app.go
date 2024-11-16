@@ -74,5 +74,8 @@ func New() Server {
 	r.HandleFunc("GET /{$}", home.Index)
 	r.HandleFunc("GET /chat", sse.HandleSSE)
 	r.HandleFunc("POST /message", messages.Create)
+	r.HandleFunc("POST /audio", messages.Audio)
+	r.HandleFunc("GET /load-audio/{audio}", messages.LoadAudio)
+	r.Folder("/attachments", os.DirFS("./uploads"))
 	return r
 }
