@@ -2,3 +2,5 @@
 database.db
 bin
 public/application.css
+public/*.js
+uploads

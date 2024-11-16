@@ -1,11 +1,10 @@
 package sse
 
 import (
+	"crypto/rand"
 	"fmt"
 	"net/http"
-	"simple-chat-sse/internal/auth"
-
-	"github.com/leapkit/leapkit/core/server/session"
+	"time"
 )
 
 func HandleSSE(w http.ResponseWriter, r *http.Request) {
@@ -17,36 +16,41 @@ func HandleSSE(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Header().Set("Access-Control-Allow-Origin", "*")
-	w.Header().Set("Access-Control-Expose-Headers", "Content-Type")
 	w.Header().Set("Content-Type", "text/event-stream")
 	w.Header().Set("Cache-Control", "no-cache")
 	w.Header().Set("Connection", "keep-alive")
 
-	// Get the room ID from the parameters
-	roomID := r.PathValue("id")
-
 	// Each connection registers its own message channel with the Broker's connection registry
-	ev := make(chan Event)
+	ev := make(chan event)
 
-	// Get the client ID (authenticated user)
-	clientID := auth.GetUserID(session.FromCtx(r.Context()))
+	generateRandomString := func() string {
+		b := make([]byte, 10)
+		_, err := rand.Read(b)
+		if err != nil {
+			panic(err)
+		}
 
+		return fmt.Sprintf("%x", b)
+	}
+
+	id := generateRandomString()
 	// Signal the broker that we have a new connection in a specific room
 	broker.newClients <- Client{
-		ID:          clientID,
+		ID:          id,
 		MessageChan: ev,
-		RoomID:      roomID,
 	}
 
 	// Disconnect the client when the connection is closed
 	defer func() {
 		// Signal the broker that the client has disconnected
 		broker.closingClients <- Client{
-			ID:          clientID,
-			RoomID:      roomID,
+			ID:          id,
 			MessageChan: ev,
 		}
 	}()
+
+	keepAliveTicker := time.NewTicker(15 * time.Second)
+	defer keepAliveTicker.Stop()
 
 	for {
 		select {
@@ -58,6 +62,10 @@ func HandleSSE(w http.ResponseWriter, r *http.Request) {
 
 			// Send the data immediately
 			flusher.Flush()
+		case <-keepAliveTicker.C:
+			fmt.Fprintf(w, "data:\n\n")
+			flusher.Flush()
+
 		}
 	}
 }

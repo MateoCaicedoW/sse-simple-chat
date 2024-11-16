@@ -1,0 +1,18 @@
+<div class="chat-message">
+    <div class="audio-message">
+        <audio src="<%= audio %>"></audio>
+        <button class="play-pause-btn" aria-label="Play audio">▶</button>
+        <div class="progress-container">
+            <div class="progress"></div>
+        </div>
+        <div class="time">0:00</div>
+    </div>
+</div>
+
+<script type="module">
+    import AudioPlayer from '<%= assetPath(`/public/audio.js`) %>';
+    const audioMessages = document.querySelectorAll('.audio-message');
+
+    // Initialize an AudioPlayer instance for each container
+    audioMessages.forEach(container => new AudioPlayer(container));
+</script>
