@@ -51,6 +51,8 @@ func HandleSSE(w http.ResponseWriter, r *http.Request) {
 		}
 	}()
 
+	// Keep alive mechanism to prevent client from timing out
+	// it returns a channel
 	keepAliveTicker := time.NewTicker(15 * time.Second)
 	defer keepAliveTicker.Stop()
 
