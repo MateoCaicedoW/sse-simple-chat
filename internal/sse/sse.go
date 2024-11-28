@@ -8,13 +8,14 @@ import (
 )
 
 func HandleSSE(w http.ResponseWriter, r *http.Request) {
-
+	//ask for the flusher
 	flusher, ok := w.(http.Flusher)
 	if !ok {
 		http.Error(w, "Streaming not supported!", http.StatusInternalServerError)
 		return
 	}
 
+	//Set the default headers
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Content-Type", "text/event-stream")
 	w.Header().Set("Cache-Control", "no-cache")
@@ -23,6 +24,7 @@ func HandleSSE(w http.ResponseWriter, r *http.Request) {
 	// Each connection registers its own message channel with the Broker's connection registry
 	ev := make(chan event)
 
+	//Generate a random ID to identify each Clients
 	generateRandomString := func() string {
 		b := make([]byte, 10)
 		_, err := rand.Read(b)

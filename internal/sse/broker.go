@@ -2,7 +2,6 @@ package sse
 
 import (
 	"log"
-	"time"
 )
 
 var broker = newBroker()
@@ -47,17 +46,19 @@ func newBroker() (broker *Broker) {
 func (b *Broker) listen() {
 	for {
 		select {
+		// When we receive a new client, we add it to the map
 		case client := <-b.newClients:
 			b.clients[client.ID] = client
+
+		// When a client has gone, we delete it from the map
 		case client := <-b.closingClients:
 			delete(b.clients, client.ID)
+
+		// When we receive a new event, we send it to all clients
 		case message := <-b.messages:
 			for _, client := range b.clients {
 				select {
 				case client.MessageChan <- message:
-				case <-time.After(time.Second * 5): // Timeout for slow clients
-					delete(b.clients, client.ID)
-					close(client.MessageChan)
 				default:
 					log.Printf("Message dropped for client: %s", client.ID)
 				}
