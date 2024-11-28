@@ -66,3 +66,9 @@ func (b *Broker) listen() {
 		}
 	}
 }
+
+// Brodcast sends a message though the messages channel in the Broker
+// This works to send the event to all clients
+func Broadcast(e *event) {
+	broker.messages <- *e
+}

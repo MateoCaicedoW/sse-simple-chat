@@ -29,7 +29,3 @@ func (e event) BuildMessage(data interface{}) (string, error) {
 
 	return strings.Replace(message, "\n", "", -1), nil
 }
-
-func (e *event) Broadcast() {
-	broker.messages <- *e
-}

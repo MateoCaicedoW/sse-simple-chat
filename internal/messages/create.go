@@ -24,8 +24,8 @@ func Create(w http.ResponseWriter, r *http.Request) {
 	msg = strings.TrimSpace(msg)
 	msg = strings.Replace(msg, "\n", "<br>", -1)
 
-	message := sse.NewEvent("chat")
-	content, err := message.BuildMessage(map[string]interface{}{
+	event := sse.NewEvent("chat")
+	content, err := event.BuildMessage(map[string]interface{}{
 		"content": msg,
 	})
 
@@ -34,8 +34,8 @@ func Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	message.Data = content
-	message.Broadcast()
+	event.Data = content
+	sse.Broadcast(event)
 }
 
 func Audio(w http.ResponseWriter, r *http.Request) {
@@ -63,7 +63,7 @@ func Audio(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	message := sse.NewEvent("chat")
-	message.Data = fmt.Sprintf(`<div hx-get="/load-audio/%s" hx-trigger="load" hx-swap="outerHTML"></div>`, fileName)
-	message.Broadcast()
+	event := sse.NewEvent("chat")
+	event.Data = fmt.Sprintf(`<div hx-get="/load-audio/%s" hx-trigger="load" hx-swap="outerHTML"></div>`, fileName)
+	sse.Broadcast(event)
 }
